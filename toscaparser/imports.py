@@ -38,6 +38,7 @@ class ImportsLoader(object):
         self.importslist = importslist
         self.custom_defs = {}
         self.nested_tosca_tpls = []
+        self.nested_imports = {}
         if not path and not tpl:
             msg = _('Input tosca template is not provided.')
             log.warning(msg)
@@ -59,6 +60,9 @@ class ImportsLoader(object):
 
     def get_nested_tosca_tpls(self):
         return self.nested_tosca_tpls
+
+    def get_nested_imports(self):
+        return self.nested_imports
 
     def _validate_and_load_imports(self):
         imports_names = set()
@@ -98,6 +102,9 @@ class ImportsLoader(object):
                         custom_type, import_def)
                     self._update_custom_def(custom_type, None)
 
+            if custom_type and 'imports' in custom_type.keys():
+                self.nested_imports.update(
+                    {full_file_name: custom_type['imports']})
             self._update_nested_tosca_tpls(full_file_name, custom_type)
 
     def _update_custom_def(self, custom_type, namespace_prefix):
@@ -225,16 +232,16 @@ class ImportsLoader(object):
                                     self.path))
                                 if file_path[0] != '' and dir_path.endswith(
                                         file_path[0]):
-                                        import_template = dir_path + "/" +\
-                                            file_path[2]
-                                        if not os.path.isfile(import_template):
-                                            msg = (_('"%(import_template)s" is'
-                                                     'not a valid file')
-                                                   % {'import_template':
-                                                      import_template})
-                                            log.error(msg)
-                                            ExceptionCollector.appendException
-                                            (ValueError(msg))
+                                    import_template = dir_path + "/" +\
+                                        file_path[2]
+                                    if not os.path.isfile(import_template):
+                                        msg = (_('"%(import_template)s" is '
+                                                 'not a valid file')
+                                               % {'import_template':
+                                                  import_template})
+                                        log.error(msg)
+                                        ExceptionCollector.appendException
+                                        (ValueError(msg))
             else:  # template is pre-parsed
                 if os.path.isabs(file_name) and os.path.isfile(file_name):
                     a_file = True

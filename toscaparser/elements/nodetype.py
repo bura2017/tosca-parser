@@ -21,7 +21,9 @@ from toscaparser.elements.statefulentitytype import StatefulEntityType
 
 class NodeType(StatefulEntityType):
     '''TOSCA built-in node type.'''
-    SECTIONS = (DERIVED_FROM, METADATA, PROPERTIES, VERSION, DESCRIPTION, ATTRIBUTES, REQUIREMENTS, CAPABILITIES, INTERFACES, ARTIFACTS) = \
+    SECTIONS = (DERIVED_FROM, METADATA, PROPERTIES, VERSION,
+                DESCRIPTION, ATTRIBUTES, REQUIREMENTS, CAPABILITIES,
+                INTERFACES, ARTIFACTS) = \
                ('derived_from', 'metadata', 'properties', 'version',
                 'description', 'attributes', 'requirements', 'capabilities',
                 'interfaces', 'artifacts')
@@ -85,9 +87,10 @@ class NodeType(StatefulEntityType):
                                          _get_node_type_by_cap(captype))
                             keyword = key
                             node_type = value
-                rtype = RelationshipType(relation, keyword, self.custom_def)
-                relatednode = NodeType(node_type, self.custom_def)
-                relationship[rtype] = relatednode
+                        rtype = RelationshipType(relation, keyword,
+                                                 self.custom_def)
+                        relatednode = NodeType(node_type, self.custom_def)
+                        relationship[rtype] = relatednode
         return relationship
 
     def _get_node_type_by_cap(self, cap):
