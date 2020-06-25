@@ -221,6 +221,12 @@ class EntityTemplate(object):
             # If property is 'required' and has no 'default' value then record
             if p.required and p.default is None:
                 required_props.append(p.name)
+        if entitytype.parent_type:
+            for p in entitytype.parent_type.get_properties_def_objects():
+                allowed_props.append(p.name)
+                # If property is 'required' and has no 'default' value then record
+                if p.required and p.default is None:
+                    required_props.append(p.name)
         # validate all required properties have values
         if properties:
             req_props_no_value_or_default = []
