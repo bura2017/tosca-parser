@@ -669,9 +669,21 @@ class GetProperty(Function):
 class GetOperationOutput(Function):
     def validate(self):
         if len(self.args) == 4:
-            self._find_node_template(self.args[0])
-            interface_name = self._find_interface_name(self.args[1])
-            self._find_operation_name(interface_name, self.args[2])
+            template_name = self.args[0]
+            template = None
+            node_template = self._find_node_template(template_name)
+            if node_template:
+                template = node_template
+            else:
+                relationship_template = \
+                    self._find_relationship_template(template_name)
+                if relationship_template:
+                    template = relationship_template
+            if not template:
+                ExceptionCollector.appendException(
+                    KeyError(_(
+                        'Node or relationship template "{0}" was not found.'
+                    ).format(template_name)))
         else:
             ExceptionCollector.appendException(
                 ValueError(_('Illegal arguments for function "{0}". Expected '
@@ -739,10 +751,11 @@ class GetOperationOutput(Function):
         for node_template in self.tosca_tpl.nodetemplates:
             if node_template.name == name:
                 return node_template
-        ExceptionCollector.appendException(
-            KeyError(_(
-                'Node template "{0}" was not found.'
-            ).format(node_template_name)))
+
+    def _find_relationship_template(self, relationship_template_name):
+        for rel_template in self.tosca_tpl.relationship_templates:
+            if rel_template.name == relationship_template_name:
+                return rel_template
 
     def result(self):
         return self
