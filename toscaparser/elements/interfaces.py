@@ -51,8 +51,10 @@ class InterfacesDef(StatefulEntityType):
             if self.node_template and self.node_template.custom_def \
                and interfacetype in self.node_template.custom_def:
                 self.defs = self.node_template.custom_def[interfacetype]
-            else:
+            elif interfacetype in self.TOSCA_DEF:
                 self.defs = self.TOSCA_DEF[interfacetype]
+            else:
+                self.defs = value
         if value:
             if isinstance(self.value, dict):
                 for i, j in self.value.items():
