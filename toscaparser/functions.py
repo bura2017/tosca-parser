@@ -14,7 +14,6 @@
 
 import abc
 import six
-import toscaparser.elements.interfaces
 
 from toscaparser.common.exception import ExceptionCollector
 from toscaparser.common.exception import UnknownInputError
@@ -672,7 +671,6 @@ class GetOperationOutput(Function):
             template_name = self.args[0]
             interface_name = self.args[1]
             operation_name = self.args[2]
-            output_var_name = self.args[3]
             template = None
             node_template = self._find_node_template(template_name)
             if node_template:
@@ -695,7 +693,7 @@ class GetOperationOutput(Function):
                 if operation:
                     return
             ExceptionCollector.appendException(
-                KeyError(_(
+                ValueError(_(
                     'Node or relationship template "{0}" has not '
                     'interface "{1}" or operation "{2}".'
                 ).format(template_name, interface_name, operation_name)))
@@ -707,7 +705,8 @@ class GetOperationOutput(Function):
                              ).format(GET_OPERATION_OUTPUT)))
             return
 
-    def _find_operation_name(self, interface_name, operation_name, interfaces=None):
+    def _find_operation_name(self, interface_name, operation_name,
+                             interfaces=None):
         if(interface_name == 'Configure' or
            interface_name == 'tosca.interfaces.node.relationship.Configure'):
             if(operation_name in
